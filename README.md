@@ -29,22 +29,42 @@ After the monitoring process completes, an automated email report is sent with t
 9. The JSON report is uploaded to the configured S3 bucket.
 10. GitHub Actions sends an email containing the monitoring results.**
     
-    GitHub Actions
-      │
-      ▼
- monitor.py
-      │
-      ▼
-GitHub REST API
-      │
-      │  Get workflow runs
-      ▼
-Calculate Metrics
-      │
-      ├──────────────► metrics.json ──► AWS S3
-      │
-      ▼
-GitHub Actions Outputs
-      │
-      ▼
-Email Report
+                       ┌──────────────────────────┐
+                    │    GitHub Actions        │
+                    │   Scheduled Workflow     │
+                    │     (Daily / Manual)     │
+                    └────────────┬─────────────┘
+                                 │
+                                 ▼
+                    ┌──────────────────────────┐
+                    │      monitor.py          │
+                    │   Python Monitoring      │
+                    └────────────┬─────────────┘
+                                 │
+                    ┌────────────┴────────────┐
+                    │                         │
+                    ▼                         ▼
+          ┌──────────────────┐       ┌──────────────────┐
+          │   GitHub REST    │       │    AWS S3        │
+          │      API         │       │ Metrics Storage  │
+          │                  │       │                  │
+          │ Workflow Runs    │       │ metrics/date.json│
+          └────────┬─────────┘       └──────────────────┘
+                   │
+                   ▼
+          ┌──────────────────┐
+          │ Calculate Metrics│
+          │                  │
+          │ • Total Runs     │
+          │ • Successful     │
+          │ • Failed        │
+          │ • Success Rate   │
+          └────────┬─────────┘
+                   │
+                   ▼
+          ┌──────────────────┐
+          │   Email Report   │
+          │                  │
+          │ Gmail SMTP       │
+          │ Monitoring Stats │
+          └──────────────────┘
