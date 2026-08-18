@@ -29,7 +29,7 @@ After the monitoring process completes, an automated email report is sent with t
 9. The JSON report is uploaded to the configured S3 bucket.
 10. GitHub Actions sends an email containing the monitoring results.**
     
-                       ┌──────────────────────────┐
+                    ┌──────────────────────────┐
                     │    GitHub Actions        │
                     │   Scheduled Workflow     │
                     │     (Daily / Manual)     │
