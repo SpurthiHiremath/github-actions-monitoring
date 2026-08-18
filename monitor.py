@@ -10,7 +10,7 @@ import boto3
 GITHUB_TOKEN = os.environ["GH_TOKEN"]
 S3_BUCKET = os.environ["S3_BUCKET"]
 
-REPOSITORY = os.environ["GITHUB_REPOSITORY"]
+REPOSITORY = os.environ["TARGET_REPOSITORY"]
 
 headers = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
