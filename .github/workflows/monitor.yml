@@ -42,4 +42,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           S3_BUCKET: ${{ vars.S3_BUCKET }}
+          TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
         run: python monitor.py
