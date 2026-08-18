@@ -32,6 +32,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Check AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Test S3 access
+        run: aws s3 ls s3://${{ vars.S3_BUCKET }}
+
       - name: Run monitoring
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
