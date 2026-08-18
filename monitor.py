@@ -85,3 +85,11 @@ print("GitHub Actions metrics:")
 print(json.dumps(metrics, indent=2))
 
 print(f"Metrics uploaded to s3://{S3_BUCKET}/metrics/{date}.json")
+
+# GitHub Actions outputs
+with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+    output.write(f"total={total_runs}\n")
+    output.write(f"successful={successful_runs}\n")
+    output.write(f"failed={failed_runs}\n")
+    output.write(f"success_rate={success_rate}\n")
+    output.write(f"date={date}\n")
