@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   monitor:
@@ -39,8 +38,32 @@ jobs:
         run: aws s3 ls s3://${{ vars.S3_BUCKET }}
 
       - name: Run monitoring
+        id: metrics
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           S3_BUCKET: ${{ vars.S3_BUCKET }}
           TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
         run: python monitor.py
+
+      - name: Send email
+        uses: dawidd6/action-send-mail@v6
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: GitHub Actions Monitoring Report - ${{ steps.metrics.outputs.date }}
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions Monitoring
+          body: |
+            GitHub Actions Monitoring Report
+
+            Repository: ${{ vars.TARGET_REPOSITORY }}
+            Date: ${{ steps.metrics.outputs.date }}
+
+            Total workflow runs: ${{ steps.metrics.outputs.total }}
+            Successful runs: ${{ steps.metrics.outputs.successful }}
+            Failed runs: ${{ steps.metrics.outputs.failed }}
+            Success rate: ${{ steps.metrics.outputs.success_rate }}%
+
+            Status: ${{ steps.metrics.outputs.failed != '0' && 'FAILURES DETECTED' || 'ALL WORKFLOWS SUCCESSFUL' }}
